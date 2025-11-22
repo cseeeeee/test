@@ -8,7 +8,7 @@ public class Board {
     /**
      * 게시판 일련번호
      * */
-    private Long id;
+    private Long boardIdx;
     /**
      * 제목
      * */

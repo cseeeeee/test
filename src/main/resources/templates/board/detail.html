@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+        }
+        .board-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        .board-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .board-content {
+            min-height: 200px;
+            padding: 20px 0;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+        }
+        .button-group {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-list {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-list:hover {
+            background-color: #5a6268;
+        }
+        .btn-edit {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script>
+        function deleteBoard() {
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                const boardIdx = document.getElementById('boardIdx').value;
+                fetch(`/api/boards/${boardIdx}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    window.location.href = '/boards';
+                })
+                .catch(error => {
+                    alert('삭제에 실패했습니다.');
+                    console.error('Error:', error);
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>게시글 상세</h1>
+
+        <input type="hidden" id="boardIdx" th:value="${board.boardIdx}">
+
+        <div class="board-title" th:text="${board.title}">제목</div>
+
+        <div class="board-info">
+            <span>작성일: <span th:text="${#temporals.format(board.createAt, 'yyyy-MM-dd HH:mm')}">2024-01-01</span></span>
+            <span>조회수: <span th:text="${board.hits}">0</span></span>
+        </div>
+
+        <div class="board-content" th:text="${board.contents}">
+            내용
+        </div>
+
+        <div class="button-group">
+            <a href="/boards" class="btn btn-list">목록</a>
+            <a th:href="@{/boards/{boardIdx}/edit(boardIdx=${board.boardIdx})}" class="btn btn-edit">수정</a>
+            <button onclick="deleteBoard()" class="btn btn-delete">삭제</button>
+        </div>
+    </div>
+</body>
+</html>

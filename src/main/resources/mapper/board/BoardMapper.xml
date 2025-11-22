@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="my.testproj.module.board.mapper.BoardMapper">
+
+    <!-- Create -->
+    <insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="boardIdx">
+        INSERT INTO board (title, contents, hits, createAt)
+        VALUES (#{title}, #{contents}, 0, NOW())
+    </insert>
+
+    <!-- Read -->
+    <select id="selectBoardByBoardIdx" parameterType="long" resultType="Board">
+        SELECT id AS boardIdx, title, contents, hits, createAt
+        FROM board
+        WHERE id = #{boardIdx}
+    </select>
+
+    <select id="selectAllBoardList" resultType="Board">
+        SELECT id AS boardIdx, title, contents, hits, createAt
+        FROM board
+        ORDER BY id DESC
+    </select>
+
+    <!-- Update -->
+    <update id="updateBoard" parameterType="Board">
+        UPDATE board
+        SET title = #{title},
+            contents = #{contents}
+        WHERE id = #{boardIdx}
+    </update>
+
+    <update id="updateBoardHits" parameterType="long">
+        UPDATE board
+        SET hits = hits + 1
+        WHERE id = #{boardIdx}
+    </update>
+
+    <!-- Delete -->
+    <delete id="deleteBoard" parameterType="long">
+        DELETE FROM board
+        WHERE id = #{boardIdx}
+    </delete>
+
+</mapper>
